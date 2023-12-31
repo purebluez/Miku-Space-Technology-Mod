@@ -1,8 +1,13 @@
 package com.Nxer.TwistSpaceTechnology.common.machine;
 
-import static com.github.technus.tectech.thing.casing.TT_Container_Casings.sBlockCasingsTT;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static gregtech.api.enums.GT_HatchElement.Energy;
+import static gregtech.api.enums.GT_HatchElement.InputBus;
+import static gregtech.api.enums.GT_HatchElement.InputHatch;
+import static gregtech.api.enums.GT_HatchElement.Maintenance;
+import static gregtech.api.enums.GT_HatchElement.OutputBus;
+import static gregtech.api.enums.GT_HatchElement.OutputHatch;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_LARGE_CHEMICAL_REACTOR;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_LARGE_CHEMICAL_REACTOR_ACTIVE;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_LARGE_CHEMICAL_REACTOR_ACTIVE_GLOW;
@@ -11,28 +16,28 @@ import static gregtech.api.enums.Textures.BlockIcons.casingTexturePages;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.Nxer.TwistSpaceTechnology.common.machine.multiMachineClasses.GTCM_MultiMachineBase;
 import com.Nxer.TwistSpaceTechnology.util.TextLocalization;
-import com.github.technus.tectech.thing.block.QuantumGlassBlock;
-import com.gtnewhorizon.structurelib.alignment.constructable.IConstructable;
-import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IItemSource;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 
+import gregtech.api.GregTech_API;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GT_HatchElementBuilder;
 import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
-import gtPlusPlus.core.block.ModBlocks;
+import gregtech.api.util.GT_Utility;
 
-public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEntity_HatsuneMiku>
-    implements IConstructable, ISurvivalConstructable {
-
-    // region Class Constructor
+// spotless:off
+public class GT_TileEntity_HatsuneMiku
+    extends GTCM_MultiMachineBase<GT_TileEntity_HatsuneMiku> {
     public GT_TileEntity_HatsuneMiku(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
@@ -40,23 +45,28 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
     public GT_TileEntity_HatsuneMiku(String aName) {
         super(aName);
     }
-    // endregion
-
-    // region Structure
-    private final int baseHorizontalOffSet = 9;
-    private final int baseVerticalOffSet = 4;
-    private final int baseDepthOffSet = 1;
-    protected static final String T0 = "Main";
+    // region Processing Logic
 
     @Override
-    public IStructureDefinition<GT_TileEntity_HatsuneMiku> getStructureDefinition() {
-        IStructureDefinition<GT_TileEntity_HatsuneMiku> Structure = StructureDefinition
-            .<GT_TileEntity_HatsuneMiku>builder()
-            .addShape(
-                T0,
-                transpose(
-                    // spotless:off
-                        new String[][] {
+    protected boolean isEnablePerfectOverclock() {
+        return true;
+    }
+
+    @Override
+    protected float getSpeedBonus() {
+        return 1.0F / 16;
+    }
+
+    @Override
+    protected int getMaxParallelRecipes() {
+        return Integer.MAX_VALUE;
+    }
+
+    // endregion
+
+    protected int mode = 0;
+    private static final String STRUCTURE_PIECE_MAIN = "main";
+    private final String[][] shape = new String[][]{
     {"                  ","      AAAAAA      ","      AAAAAA      ","      AAAAAA      ","      AAAAAA      ","                  "},
     {"      AAAAAA      ","     A      A     ","    BA      AB    ","    BA      AB    ","     A      A     ","      AAAAAA      "},
     {"      AA  AA      ","    BA  EE  AB    ","   ABA      ABA   ","   ABA      ABA   ","    BA      AB    ","      AAAAAA      "},
@@ -72,27 +82,41 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
     {"                  ","                  ","      EE  EE      ","      EE  EE      ","                  ","                  "},
     {"                  ","                  ","      FF  FF      ","      FF  FF      ","                  ","                  "},
     {"                  ","                  ","      FF  FF      ","      FF  FF      ","                  ","                  "},
-    {"                  ","                  ","      FF  FF      ","      FF  FF      ","                  ","                  "} }))
-                // spotless:on
-            .addElement('A', ofBlock(sBlockCasingsTT, 4))
-            .addElement('B', ofBlock(sBlockCasingsTT, 7))
-            .addElement('C', ofBlock(sBlockCasingsTT, 9))
-            .addElement('D', ofBlock(ModBlocks.blockCasings4Misc, 4))
-            .addElement('E', ofBlock(QuantumGlassBlock.INSTANCE, 0))
-            .addElement('F', ofBlock(sBlockCasingsTT, 4))
-            .build();
+    {"                  ","                  ","      FF  FF      ","      FF  FF      ","                  ","                  "}
+    };
+    private final int horizontalOffSet = 9;
+    private final int verticalOffSet = 4;
+    private final int depthOffSet = 1;
 
-        return Structure;
+    @Override
+    public IStructureDefinition<GT_TileEntity_HatsuneMiku> getStructureDefinition() {
+        return StructureDefinition
+            .<GT_TileEntity_HatsuneMiku>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addElement('A', ofBlock(GregTech_API.sBlockCasings2, 1))
+            .addElement('B', ofBlock(GregTech_API.sBlockCasings4, 2))
+            .addElement('C', ofBlock(GregTech_API.sBlockCasings8, 0))
+            .addElement('D', ofBlock(GregTech_API.sBlockCasings1, 5))
+            .addElement('E', ofBlock(GregTech_API.sBlockCasings8, 6))
+            .addElement(
+                'F',
+                GT_HatchElementBuilder.<GT_TileEntity_HatsuneMiku>builder()
+                    .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy)
+                    .dot(1)
+                    .casingIndex(GT_Utility.getCasingTextureIndex(GregTech_API.sBlockCasings8, 10))
+                    .buildAndChain(GregTech_API.sBlockCasings8, 10))
+            .build();
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        return checkPiece(T0, baseHorizontalOffSet, baseVerticalOffSet, baseDepthOffSet);
+    public boolean addToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
+        return super.addToMachineList(aTileEntity, aBaseCasingIndex)
+            || addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
     }
 
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(T0, stackSize, hintsOnly, 9, 4, 1);
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, horizontalOffSet, verticalOffSet, depthOffSet);
     }
 
     @Override
@@ -100,51 +124,43 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
         if (this.mMachine) return -1;
         int realBudget = elementBudget >= 200 ? elementBudget : Math.min(200, elementBudget * 5);
         return this.survivialBuildPiece(
-            T0,
+            STRUCTURE_PIECE_MAIN,
             stackSize,
-            baseHorizontalOffSet,
-            baseVerticalOffSet,
-            baseDepthOffSet,
+            horizontalOffSet,
+            verticalOffSet,
+            depthOffSet,
             realBudget,
             source,
             actor,
             false,
             true);
     }
-    // endregion
 
-    // region Overrides
+
     @Override
-    protected GT_Multiblock_Tooltip_Builder createTooltip() {
-        final GT_Multiblock_Tooltip_Builder tt = new GT_Multiblock_Tooltip_Builder();
-        tt.addMachineType(TextLocalization.Tooltip_HatsuneMiku_MachineType)
-            .addInfo(TextLocalization.Tooltip_HatsuneMiku_01)
-            .addInfo(TextLocalization.Tooltip_HatsuneMiku_02)
-            .addInfo(TextLocalization.Tooltip_HatsuneMiku_03)
-            .addInfo(TextLocalization.Tooltip_HatsuneMiku_04)
-            .addInfo(TextLocalization.Tooltip_HatsuneMiku_05)
-            .addInfo(TextLocalization.Tooltip_HatsuneMiku_06)
-            .addInfo(TextLocalization.Tooltip_HatsuneMiku_07)
-            .addInfo(TextLocalization.Tooltip_HatsuneMiku_08)
-            .addInfo(TextLocalization.Tooltip_HatsuneMiku_09)
-            .addInfo(TextLocalization.Tooltip_HatsuneMiku_2_01)
-            .addInfo(TextLocalization.Tooltip_HatsuneMiku_2_02)
-            .addInfo(TextLocalization.Tooltip_HatsuneMiku_2_03)
-            .addInfo(TextLocalization.Tooltip_HatsuneMiku_2_04)
-            .addInfo(TextLocalization.Tooltip_HatsuneMiku_2_05)
-            .addInfo(TextLocalization.textScrewdriverChangeMode)
-            .addSeparator()
-            .addInfo(TextLocalization.StructureTooComplex)
-            .addInfo(TextLocalization.BLUE_PRINT_INFO)
-            .beginStructureBlock(31, 31, 32, false)
-            .addInputHatch(TextLocalization.textUseBlueprint, 1)
-            .addOutputHatch(TextLocalization.textUseBlueprint, 1)
-            .addInputBus(TextLocalization.textUseBlueprint, 1)
-            .addOutputBus(TextLocalization.textUseBlueprint, 1)
-            .addMaintenanceHatch(TextLocalization.textUseBlueprint, 1)
-            .addEnergyHatch(TextLocalization.textUseBlueprint, 2)
-            .toolTipFinisher(TextLocalization.ModName);
-        return tt;
+    public RecipeMap<?> getRecipeMap() {
+        return null;
+    }
+
+    // @Override
+    // public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+    //     if (getBaseMetaTileEntity().isServerSide()) {
+    //         this.mode = (this.mode + 1) % 2;
+    //         GT_Utility.sendChatToPlayer(
+    //             aPlayer,
+    //             StatCollector.translateToLocal("IntensifyChemicalDistorter.mode." + this.mode));
+    //     }
+    // }
+
+    @Override
+    public boolean isCorrectMachinePart(ItemStack aStack) {
+        return true;
+    }
+
+    @Override
+    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
+        // this.casingAmountActual = 0; // re-init counter
+        return checkPiece(STRUCTURE_PIECE_MAIN, horizontalOffSet, verticalOffSet, depthOffSet);
     }
 
     @Override
@@ -183,15 +199,29 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
     }
 
     @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+
+        aNBT.setInteger("mode", mode);
+    }
+
+    @Override
+    public void loadNBTData(final NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+
+        mode = aNBT.getInteger("mode");
+    }
+
+    @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new GTCM_TestMultiMachine(this.mName);
+        return new GT_TileEntity_HatsuneMiku(this.mName);
     }
 
     @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
-        int aColorIndex, boolean aActive, boolean aRedstone) {
+                                 int aColorIndex, boolean aActive, boolean aRedstone) {
         if (side == facing) {
-            if (aActive) return new ITexture[] { casingTexturePages[1][48], TextureFactory.builder()
+            if (aActive) return new ITexture[]{casingTexturePages[1][54], TextureFactory.builder()
                 .addIcon(OVERLAY_FRONT_LARGE_CHEMICAL_REACTOR_ACTIVE)
                 .extFacing()
                 .build(),
@@ -199,8 +229,8 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
                     .addIcon(OVERLAY_FRONT_LARGE_CHEMICAL_REACTOR_ACTIVE_GLOW)
                     .extFacing()
                     .glow()
-                    .build() };
-            return new ITexture[] { casingTexturePages[1][48], TextureFactory.builder()
+                    .build()};
+            return new ITexture[]{casingTexturePages[1][54], TextureFactory.builder()
                 .addIcon(OVERLAY_FRONT_LARGE_CHEMICAL_REACTOR)
                 .extFacing()
                 .build(),
@@ -208,29 +238,32 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
                     .addIcon(OVERLAY_FRONT_LARGE_CHEMICAL_REACTOR_GLOW)
                     .extFacing()
                     .glow()
-                    .build() };
+                    .build()};
         }
-        return new ITexture[] { casingTexturePages[1][48] };
+        return new ITexture[]{casingTexturePages[1][54]};
     }
 
-    // endregion
-
-    // region Processing Logic
-
+    // Tooltips
     @Override
-    protected boolean isEnablePerfectOverclock() {
-        return true;
+    protected GT_Multiblock_Tooltip_Builder createTooltip() {
+        final GT_Multiblock_Tooltip_Builder tt = new GT_Multiblock_Tooltip_Builder();
+        tt.addMachineType(TextLocalization.Tooltip_ICD_MachineType)
+            .addInfo(TextLocalization.StructureTooComplex)
+            .addInfo(TextLocalization.BLUE_PRINT_INFO)
+            .addSeparator()
+            .beginStructureBlock(11, 13, 11, false)
+            .addController(TextLocalization.textFrontBottom)
+            .addCasingInfoRange(TextLocalization.textCasing, 8, 26, false)
+            .addInputHatch(TextLocalization.textAnyCasing, 1)
+            .addOutputHatch(TextLocalization.textAnyCasing, 1)
+            .addInputBus(TextLocalization.textAnyCasing, 2)
+            .addOutputBus(TextLocalization.textAnyCasing, 2)
+            .addMaintenanceHatch(TextLocalization.textAnyCasing, 2)
+            .addEnergyHatch(TextLocalization.textAnyCasing, 3)
+            .toolTipFinisher(TextLocalization.ModName);
+        return tt;
     }
 
-    @Override
-    protected float getSpeedBonus() {
-        return 1.0F / 16;
-    }
-
-    @Override
-    protected int getMaxParallelRecipes() {
-        return Integer.MAX_VALUE;
-    }
-
-    // endregion
 }
+
+// spotless:on

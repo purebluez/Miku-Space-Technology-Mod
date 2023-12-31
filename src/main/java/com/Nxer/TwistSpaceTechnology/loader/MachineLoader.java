@@ -304,6 +304,7 @@ public class MachineLoader {
             .getStackForm(1);
         GTCMItemList.AstralComputingArray.set(AstralComputingArray);
 
+        //
         HatsuneMiku = new GT_TileEntity_HatsuneMiku(19030, "NameHatsuneMiku", "Hatsune Miku").getStackForm(1);
         GTCMItemList.HatsuneMiku.set(HatsuneMiku);
         // endregion
