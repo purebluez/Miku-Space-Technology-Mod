@@ -9,6 +9,7 @@ import com.Nxer.TwistSpaceTechnology.common.GTCMItemList;
 import com.Nxer.TwistSpaceTechnology.common.machine.GTCM_CrystallineInfinitier;
 import com.Nxer.TwistSpaceTechnology.common.machine.GTCM_ElvenWorkshop;
 import com.Nxer.TwistSpaceTechnology.common.machine.GTCM_HyperSpacetimeTransformer;
+import com.Nxer.TwistSpaceTechnology.common.machine.GT_TileEntity_HatsuneMiku;
 import com.Nxer.TwistSpaceTechnology.common.machine.GT_TileEntity_HolySeparator;
 import com.Nxer.TwistSpaceTechnology.common.machine.GT_TileEntity_IntensifyChemicalDistorter;
 import com.Nxer.TwistSpaceTechnology.common.machine.GT_TileEntity_MagneticDomainConstructor;
@@ -78,6 +79,7 @@ public class MachineLoader {
     public static ItemStack BiosphereIII;
     public static ItemStack AdvancedMegaOilCracker;
     public static ItemStack IndistinctTentacle;
+    public static ItemStack HatsuneMiku;
 
     public static ItemStack NuclearReactor;
 
@@ -301,6 +303,9 @@ public class MachineLoader {
         AstralComputingArray = new TST_Computer(19029, "NameAstralComputingArray", "Astral Computing Array")
             .getStackForm(1);
         GTCMItemList.AstralComputingArray.set(AstralComputingArray);
+
+        HatsuneMiku = new GT_TileEntity_HatsuneMiku(19030, "NameHatsuneMiku", "Hatsune Miku").getStackForm(1);
+        GTCMItemList.HatsuneMiku.set(HatsuneMiku);
         // endregion
 
         // region Single block Machine
