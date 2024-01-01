@@ -604,7 +604,7 @@ public class TextLocalization {
     // region HatsuneMiku
     public static final String NameHatsuneMiku = texter(""+EnumChatFormatting.BOLD+EnumChatFormatting.AQUA+"Hatsune Miku","NameHatsuneMiku");
     public static final String Tooltip_HatsuneMiku_MachineType = texter("Virtual Diva","Tooltip_HatsuneMiku_MachineType");
-    public static final String Tooltip_HatsuneMiku_01 = texter(""+EnumChatFormatting.BOLD+EnumChatFormatting.ITALIC+"Shall I deny my lungs, their breathing rights?","Tooltip_HatsuneMiku01");
+    public static final String Tooltip_HatsuneMiku_01 = texter(""+EnumChatFormatting.BOLD+EnumChatFormatting.ITALIC+EnumChatFormatting.LIGHT_PURPLE+"Shall I deny my lungs, their breathing rights?","Tooltip_HatsuneMiku01");
     public static final String Tooltip_HatsuneMiku_02 = texter("Performs concerts, generates EU from the fans","Tooltip_HatsuneMiku02");
     public static final String Tooltip_HatsuneMiku_03 = texter("Consumes up to 1000L of Mikulum per concert, multiplied by 2^(Twintail Tier)","Tooltip_HatsuneMiku03");
     public static final String Tooltip_HatsuneMiku_04 = texter("Fans will come naturally, accumulate more with a Catalyst","Tooltip_HatsuneMiku04");

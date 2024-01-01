@@ -16,7 +16,6 @@ import static gregtech.api.enums.Textures.BlockIcons.casingTexturePages;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.Nxer.TwistSpaceTechnology.common.machine.multiMachineClasses.GTCM_MultiMachineBase;
@@ -64,8 +63,7 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
     // endregion
 
     // region Structure
-    private int mCasingAmount;
-    protected int mode = 0;
+    // protected int mode = 0;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private final String[][] T0 = new String[][] {
         // spotless:off
@@ -74,13 +72,13 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
     {"      AA  AA      ","    BA  EE  AB    ","   ABA      ABA   ","   ABA      ABA   ","    BA      AB    ","      AAAAAA      "},
     {"                  ","    BAEFEEFEAB    ","  AABAE    EABAA  ","  AABAE    EABAA  ","    BAEEEEEEAB    ","      AAAAAA      "},
     {"                  ","      EEE~EE      "," AAAB E    E BAAA "," AAAB E    E BAAA ","      EEEEEE      ","                  "},
-    {"                  ","      EECCEE      "," AAA  E    E  AAA "," AAA  E    E  AAA ","      EEEEEE      ","                  "},
+    {"                  ","      EECCEE      "," AAA  EEEEEE  AAA "," AAA  EEEEEE  AAA ","      EEEEEE      ","                  "},
     {"                  ","                  "," AA    DDDD    AA "," AA    DDDD    AA ","                  ","                  "},
     {"     FF    FF     ","     FF    FF     ","AAA  EEDDDDEE  AAA","AAA  EEDDDDEE  AAA","                  ","                  "},
     {"     FF    FF     ","     FF    FF     ","AA   EEDDDDEE   AA","AA   EEDDDDEE   AA","                  ","                  "},
     {"                  ","                  ","AA     DDDD     AA","AA     DDDD     AA","                  ","                  "},
     {"                  ","      CCCCCC      ","A     CDDDDC     A","A     CDDDDC     A","      CCCCCC      ","                  "},
-    {"                  ","      CAACAA      ","     A      C     ","     A      A     ","      CAACAA      ","                  "},
+    {"                  ","      CAACAA      ","     AC    CC     ","     AC    CA     ","      CAACAA      ","                  "},
     {"                  ","                  ","      EE  EE      ","      EE  EE      ","                  ","                  "},
     {"                  ","                  ","      FF  FF      ","      FF  FF      ","                  ","                  "},
     {"                  ","                  ","      FF  FF      ","      FF  FF      ","                  ","                  "},
@@ -99,7 +97,13 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
             .addElement('B', ofBlock(GregTech_API.sBlockCasings4, 2))
             .addElement('C', ofBlock(GregTech_API.sBlockCasings8, 0))
             .addElement('D', ofBlock(GregTech_API.sBlockCasings1, 5))
-            .addElement('E', ofBlock(GregTech_API.sBlockCasings8, 6))
+            .addElement(
+                'E',
+                GT_HatchElementBuilder.<GT_TileEntity_HatsuneMiku>builder()
+                    .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy)
+                    .dot(1)
+                    .casingIndex(GT_Utility.getCasingTextureIndex(GregTech_API.sBlockCasings8, 6))
+                    .buildAndChain(GregTech_API.sBlockCasings8, 6))
             .addElement(
                 'F',
                 GT_HatchElementBuilder.<GT_TileEntity_HatsuneMiku>builder()
@@ -140,11 +144,11 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
     // endregion
 
     // region Overrides
-    @Override
-    public boolean addToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        return super.addToMachineList(aTileEntity, aBaseCasingIndex)
-            || addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
-    }
+    // @Override
+    // public boolean addToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
+    // return super.addToMachineList(aTileEntity, aBaseCasingIndex)
+    // || addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
+    // }
 
     @Override
     public RecipeMap<?> getRecipeMap() {
@@ -191,19 +195,19 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
         return true;
     }
 
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
+    // @Override
+    // public void saveNBTData(NBTTagCompound aNBT) {
+    // super.saveNBTData(aNBT);
 
-        aNBT.setInteger("mode", mode);
-    }
+    // aNBT.setInteger("mode", mode);
+    // }
 
-    @Override
-    public void loadNBTData(final NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
+    // @Override
+    // public void loadNBTData(final NBTTagCompound aNBT) {
+    // super.loadNBTData(aNBT);
 
-        mode = aNBT.getInteger("mode");
-    }
+    // mode = aNBT.getInteger("mode");
+    // }
 
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
@@ -240,25 +244,33 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
     @Override
     protected GT_Multiblock_Tooltip_Builder createTooltip() {
         final GT_Multiblock_Tooltip_Builder tt = new GT_Multiblock_Tooltip_Builder();
-        tt.addMachineType(TextLocalization.Tooltip_ICD_MachineType)
+        tt.addMachineType(TextLocalization.Tooltip_HatsuneMiku_MachineType)
+            .addInfo(TextLocalization.Tooltip_HatsuneMiku_01)
+            .addInfo(TextLocalization.Tooltip_HatsuneMiku_02)
+            .addInfo(TextLocalization.Tooltip_HatsuneMiku_03)
+            .addInfo(TextLocalization.Tooltip_HatsuneMiku_04)
+            .addInfo(TextLocalization.Tooltip_HatsuneMiku_05)
+            .addInfo(TextLocalization.Tooltip_HatsuneMiku_06)
+            .addInfo(TextLocalization.Tooltip_HatsuneMiku_07)
+            .addInfo(TextLocalization.Tooltip_HatsuneMiku_08)
+            .addInfo(TextLocalization.Tooltip_HatsuneMiku_09)
+            .addInfo(TextLocalization.Tooltip_HatsuneMiku_2_01)
+            .addInfo(TextLocalization.Tooltip_HatsuneMiku_2_02)
+            .addInfo(TextLocalization.Tooltip_HatsuneMiku_2_03)
+            .addInfo(TextLocalization.Tooltip_HatsuneMiku_2_04)
+            .addInfo(TextLocalization.Tooltip_HatsuneMiku_2_05)
+            .addSeparator()
             .addInfo(TextLocalization.StructureTooComplex)
             .addInfo(TextLocalization.BLUE_PRINT_INFO)
-            .addSeparator()
-            .beginStructureBlock(11, 13, 11, false)
-            .addController(TextLocalization.textFrontBottom)
-            .addCasingInfoRange(TextLocalization.textCasing, 8, 26, false)
-            .addInputHatch(TextLocalization.textAnyCasing, 1)
-            .addOutputHatch(TextLocalization.textAnyCasing, 1)
-            .addInputBus(TextLocalization.textAnyCasing, 2)
-            .addOutputBus(TextLocalization.textAnyCasing, 2)
-            .addMaintenanceHatch(TextLocalization.textAnyCasing, 2)
-            .addEnergyHatch(TextLocalization.textAnyCasing, 3)
+            .beginStructureBlock(19, 19, 21, false)
+            .addInputHatch(TextLocalization.textUseBlueprint, 1)
+            .addOutputHatch(TextLocalization.textUseBlueprint, 1)
+            .addInputBus(TextLocalization.textUseBlueprint, 1)
+            .addOutputBus(TextLocalization.textUseBlueprint, 1)
+            .addMaintenanceHatch(TextLocalization.textUseBlueprint, 3)
+            .addEnergyHatch(TextLocalization.textUseBlueprint, 2)
             .toolTipFinisher(TextLocalization.ModName);
         return tt;
-    }
-
-    private void onCasingAdded() {
-        mCasingAmount++;
     }
 
     // endregion
