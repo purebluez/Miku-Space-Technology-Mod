@@ -26,6 +26,7 @@ import com.Nxer.TwistSpaceTechnology.recipe.processingLineRecipe.LanthanidesReci
 import com.Nxer.TwistSpaceTechnology.recipe.specialRecipe.BOTRecipePool;
 import com.Nxer.TwistSpaceTechnology.recipe.specialRecipe.DSPRecipePool;
 import com.Nxer.TwistSpaceTechnology.recipe.specialRecipe.MegaUniversalSpaceStationRecipePool;
+import com.Nxer.TwistSpaceTechnology.recipe.specialRecipe.MikuFuelRecipePool;
 import com.Nxer.TwistSpaceTechnology.recipe.specialRecipe.TCRecipePool;
 import com.Nxer.TwistSpaceTechnology.recipe.specialRecipe.TCResearches;
 import com.Nxer.TwistSpaceTechnology.recipe.specialRecipe.TSTBufferedEnergyHatchRecipe;
@@ -43,7 +44,8 @@ public class RecipeLoader {
             new DistillationRecipePool(), new ExtractorRecipePool(), new CompressorRecipePool(), new BOTRecipePool(),
             new TCRecipePool(), new ElvenWorkshopRecipePool(), new RuneEngraverRecipePool(),
             new CokingFactoryRecipePool(), new StellarForgeRecipePool(), new LanthanidesRecipePool(),
-            new HyperSpacetimeTransformerRecipePool(), new TSTBufferedEnergyHatchRecipe(), new CentrifugeRecipePool() };
+            new HyperSpacetimeTransformerRecipePool(), new TSTBufferedEnergyHatchRecipe(), new CentrifugeRecipePool(),
+            new MikuFuelRecipePool() };
 
         new TCResearches().loadResearches();
         for (IRecipePool recipePool : recipePools) {

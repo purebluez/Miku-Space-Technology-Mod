@@ -116,6 +116,17 @@ public class MaterialPool implements Runnable {
         new Pair<>(PureMana, 1),
         new Pair<>(Materials.Stone, 2));
 
+    public static final Werkstoff Mikulum = new Werkstoff(
+        new short[] { 134, 206, 203 }, // Miku Hair
+        "Mikulum",
+        subscriptNumbers("Miλ"),
+        new Werkstoff.Stats(),
+        Werkstoff.Types.MIXTURE,
+        new Werkstoff.GenerationFeatures().disable()
+            .addCells(),
+        offsetID_01 + 8,
+        TextureSet.SET_FLUID);
+
     // Bartworks' Material System run on Runnable.class
     @Override
     public void run() {

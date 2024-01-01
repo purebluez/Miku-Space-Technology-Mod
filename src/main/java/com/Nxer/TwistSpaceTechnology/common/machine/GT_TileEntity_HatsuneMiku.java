@@ -144,11 +144,6 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
     // endregion
 
     // region Overrides
-    // @Override
-    // public boolean addToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-    // return super.addToMachineList(aTileEntity, aBaseCasingIndex)
-    // || addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
-    // }
 
     @Override
     public RecipeMap<?> getRecipeMap() {
@@ -194,20 +189,6 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
     public boolean supportsSingleRecipeLocking() {
         return true;
     }
-
-    // @Override
-    // public void saveNBTData(NBTTagCompound aNBT) {
-    // super.saveNBTData(aNBT);
-
-    // aNBT.setInteger("mode", mode);
-    // }
-
-    // @Override
-    // public void loadNBTData(final NBTTagCompound aNBT) {
-    // super.loadNBTData(aNBT);
-
-    // mode = aNBT.getInteger("mode");
-    // }
 
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {

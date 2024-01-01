@@ -602,22 +602,22 @@ public class TextLocalization {
     // endregion
     
     // region HatsuneMiku
-    public static final String NameHatsuneMiku = texter(""+EnumChatFormatting.BOLD+EnumChatFormatting.AQUA+"Hatsune Miku","NameHatsuneMiku");
-    public static final String Tooltip_HatsuneMiku_MachineType = texter("Virtual Diva","Tooltip_HatsuneMiku_MachineType");
-    public static final String Tooltip_HatsuneMiku_01 = texter(""+EnumChatFormatting.BOLD+EnumChatFormatting.ITALIC+EnumChatFormatting.LIGHT_PURPLE+"Shall I deny my lungs, their breathing rights?","Tooltip_HatsuneMiku01");
-    public static final String Tooltip_HatsuneMiku_02 = texter("Performs concerts, generates EU from the fans","Tooltip_HatsuneMiku02");
-    public static final String Tooltip_HatsuneMiku_03 = texter("Consumes up to 1000L of Mikulum per concert, multiplied by 2^(Twintail Tier)","Tooltip_HatsuneMiku03");
-    public static final String Tooltip_HatsuneMiku_04 = texter("Fans will come naturally, accumulate more with a Catalyst","Tooltip_HatsuneMiku04");
-    public static final String Tooltip_HatsuneMiku_05 = texter("Supply the catalyst prior to the concert using the Input Bus","Tooltip_HatsuneMiku05");
-    public static final String Tooltip_HatsuneMiku_06 = texter("If the Input Hatch runs out of Mikulum during a concert, all EU will be lost.","Tooltip_HatsuneMiku06");
-    public static final String Tooltip_HatsuneMiku_07 = texter("Duration of Concerts can be controlled within the GUI","Tooltip_HatsuneMiku07");
-    public static final String Tooltip_HatsuneMiku_08 = texter("EU/t formula: ","Tooltip_HatsuneMiku08");
-    public static final String Tooltip_HatsuneMiku_09 = texter("Supply Miku with additional equipment to increase EU generation","Tooltip_HatsuneMiku09");
-    public static final String Tooltip_HatsuneMiku_2_01 = texter("Equipment tiers:","Tooltip_HatsuneMiku2_01");
-    public static final String Tooltip_HatsuneMiku_2_02 = texter("  T0: Hatsune Miku - Multiplier: 1","Tooltip_HatsuneMiku2_02");
-    public static final String Tooltip_HatsuneMiku_2_03 = texter("  T1: Stage - Multiplier: 5","Tooltip_HatsuneMiku2_03");
-    public static final String Tooltip_HatsuneMiku_2_04 = texter("  T2: Speakers - Multiplier: 25","Tooltip_HatsuneMiku2_04");
-    public static final String Tooltip_HatsuneMiku_2_05 = texter("  T3: Lights - Multiplier: 125","Tooltip_HatsuneMiku2_05");
+    public static final String NameHatsuneMiku = texter("NameHatsuneMiku",""+EnumChatFormatting.BOLD+EnumChatFormatting.AQUA+"Hatsune Miku");
+    public static final String Tooltip_HatsuneMiku_MachineType = texter("Tooltip_HatsuneMiku_MachineType","Virtual Diva");
+    public static final String Tooltip_HatsuneMiku_01 = texter("Tooltip_HatsuneMiku01",""+EnumChatFormatting.BOLD+EnumChatFormatting.ITALIC+EnumChatFormatting.LIGHT_PURPLE+"Shall I deny my lungs, their breathing rights?");
+    public static final String Tooltip_HatsuneMiku_02 = texter("Tooltip_HatsuneMiku02","Performs concerts, generates EU from the fans");
+    public static final String Tooltip_HatsuneMiku_03 = texter("Tooltip_HatsuneMiku03","Consumes up to 1000L of Mikulum per concert, multiplied by 2^(Twintail Tier)");
+    public static final String Tooltip_HatsuneMiku_04 = texter("Tooltip_HatsuneMiku04","Fans will come naturally, accumulate more with a Catalyst");
+    public static final String Tooltip_HatsuneMiku_05 = texter("Tooltip_HatsuneMiku05","Supply the catalyst prior to the concert using the Input Bus");
+    public static final String Tooltip_HatsuneMiku_06 = texter("Tooltip_HatsuneMiku06","If the Input Hatch runs out of Mikulum during a concert, all EU will be lost.");
+    public static final String Tooltip_HatsuneMiku_07 = texter("Tooltip_HatsuneMiku07","Duration of Concerts can be controlled within the GUI");
+    public static final String Tooltip_HatsuneMiku_08 = texter("Tooltip_HatsuneMiku08","EU/t formula: ");
+    public static final String Tooltip_HatsuneMiku_09 = texter("Tooltip_HatsuneMiku09","Supply Miku with additional equipment to increase EU generation");
+    public static final String Tooltip_HatsuneMiku_2_01 = texter("Tooltip_HatsuneMiku2_01","Equipment tiers:");
+    public static final String Tooltip_HatsuneMiku_2_02 = texter("Tooltip_HatsuneMiku2_02","  T0: Hatsune Miku - Multiplier: 1");
+    public static final String Tooltip_HatsuneMiku_2_03 = texter("Tooltip_HatsuneMiku2_03","  T1: Stage - Multiplier: 5");
+    public static final String Tooltip_HatsuneMiku_2_04 = texter("Tooltip_HatsuneMiku2_04","  T2: Speakers - Multiplier: 25");
+    public static final String Tooltip_HatsuneMiku_2_05 = texter("Tooltip_HatsuneMiku2_05","  T3: Lights - Multiplier: 125");
     // endregion
 }
 // spotless:on
