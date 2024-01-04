@@ -55,7 +55,7 @@ public class RecipeLoader {
         StaticMiscs.init();
         GT_TileEntity_MegaBrickedBlastFurnace.initStatics();
 
-        OP_NormalProcessing.instance.enumOreProcessingRecipes();
+        new OP_NormalProcessing().enumOreProcessingRecipes();
         if (Config.EnableRecipeRegistry_IndistinctTentacle) {
             new AssemblyLineWithoutResearchRecipePool().loadRecipes();
         }
