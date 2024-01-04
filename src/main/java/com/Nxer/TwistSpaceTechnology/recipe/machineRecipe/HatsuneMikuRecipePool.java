@@ -1,26 +1,24 @@
 package com.Nxer.TwistSpaceTechnology.recipe.machineRecipe;
 
-import com.Nxer.TwistSpaceTechnology.common.GTCMItemList;
+import static com.Nxer.TwistSpaceTechnology.config.Config.EUPerMikulumL;
+
+import com.Nxer.TwistSpaceTechnology.common.material.MaterialPool;
+import com.Nxer.TwistSpaceTechnology.common.recipeMap.GTCMRecipe;
 import com.Nxer.TwistSpaceTechnology.recipe.IRecipePool;
 
 import gregtech.api.enums.GT_Values;
-import gregtech.api.interfaces.IRecipeMap;
-import gregtech.api.recipe.RecipeMaps;
-import ic2.api.item.IC2Items;
 
-public class CompressorRecipePool implements IRecipePool {
+public class HatsuneMikuRecipePool implements IRecipePool {
 
     @Override
     public void loadRecipes() {
 
-        final IRecipeMap Compressor = RecipeMaps.compressorRecipes;
-
         GT_Values.RA.stdBuilder()
-            .itemInputs(GTCMItemList.PurpleMagnoliaPetal.get(8))
-            .itemOutputs(IC2Items.getItem("plantBall"))
+            .fluidInputs(MaterialPool.Mikulum.getFluidOrGas(1000))
             .noOptimize()
-            .eut(2)
-            .duration(15 * 20)
-            .addTo(Compressor);
+            .specialValue((int) (EUPerMikulumL * 1000))
+            .eut(0)
+            .duration(200)
+            .addTo(GTCMRecipe.HatsuneMikuRecipes);
     }
 }

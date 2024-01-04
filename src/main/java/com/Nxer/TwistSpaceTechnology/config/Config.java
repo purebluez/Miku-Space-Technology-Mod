@@ -211,6 +211,10 @@ public class Config {
     // region Infinite Air Hatch
     public static double secondsOfInfiniteAirHatchFillFull = 1;
     // endregion
+    
+    // region Hatsune Miku
+    public static long EUPerMikulumL = 1;
+    // endregion
 
     public static boolean activateMegaSpaceStation=false;
     public static boolean activateCombatStats=false;

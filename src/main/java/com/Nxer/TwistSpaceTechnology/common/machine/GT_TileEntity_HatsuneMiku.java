@@ -1,8 +1,11 @@
 package com.Nxer.TwistSpaceTechnology.common.machine;
 
+import static com.Nxer.TwistSpaceTechnology.config.Config.EUPerMikulumL;
+import static com.Nxer.TwistSpaceTechnology.util.TextHandler.texter;
+import static com.Nxer.TwistSpaceTechnology.util.Utils.fluidEqual;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-import static gregtech.api.enums.GT_HatchElement.Energy;
+import static gregtech.api.enums.GT_HatchElement.Dynamo;
 import static gregtech.api.enums.GT_HatchElement.InputBus;
 import static gregtech.api.enums.GT_HatchElement.InputHatch;
 import static gregtech.api.enums.GT_HatchElement.Maintenance;
@@ -14,11 +17,21 @@ import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_LARGE_CHEMICA
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_LARGE_CHEMICAL_REACTOR_GLOW;
 import static gregtech.api.enums.Textures.BlockIcons.casingTexturePages;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.Nxer.TwistSpaceTechnology.common.machine.multiMachineClasses.GTCM_MultiMachineBase;
+import com.Nxer.TwistSpaceTechnology.common.material.MaterialPool;
+import com.Nxer.TwistSpaceTechnology.common.recipeMap.GTCMRecipe;
 import com.Nxer.TwistSpaceTechnology.util.TextLocalization;
 import com.gtnewhorizon.structurelib.structure.IItemSource;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
@@ -29,10 +42,14 @@ import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.check.CheckRecipeResult;
+import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GT_HatchElementBuilder;
 import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
 import gregtech.api.util.GT_Utility;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 
 public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEntity_HatsuneMiku> {
 
@@ -46,18 +63,111 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
     // region Processing Logic
 
     @Override
+    public CheckRecipeResult checkProcessing() {
+
+        ArrayList<FluidStack> tFluids = getStoredFluids();
+        for (int i = 0; i < tFluids.size() - 1; i++) {
+            for (int j = i + 1; j < tFluids.size(); j++) {
+                if (GT_Utility.areFluidsEqual(tFluids.get(i), tFluids.get(j))) {
+                    if ((tFluids.get(i)).amount >= (tFluids.get(j)).amount) {
+                        tFluids.remove(j--);
+                    } else {
+                        tFluids.remove(i--);
+                        break;
+                    }
+                }
+            }
+        }
+
+        boolean hasRecipe = false;
+        FluidStack[] input = getStoredFluids().toArray(new FluidStack[0]);
+        for (FluidStack fluids : getStoredFluids()) {
+            if (fluidEqual(fluids, MaterialPool.Mikulum.getFluidOrGas(1000))) {
+                consumeFuel(MaterialPool.Mikulum.getFluidOrGas(1000), input);
+                hasRecipe = true;
+                currentOutputEU += EUPerMikulumL * outputMultiplier;
+            }
+        }
+
+        if (!hasRecipe) {
+            return CheckRecipeResultRegistry.NO_RECIPE;
+        }
+        updateSlots();
+        return CheckRecipeResultRegistry.GENERATING;
+    }
+
+    public boolean consumeFuel(FluidStack target, FluidStack[] input) {
+        if (target == null) return false;
+        for (FluidStack inFluid : input) {
+            if (inFluid != null && inFluid.isFluidEqual(target) && inFluid.amount >= target.amount) {
+                inFluid.amount -= target.amount;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private double outputMultiplier = 1;
+    // private int tierTwintail = -1;
+    private long currentOutputEU = 0;
+    private long storageEU = 0;
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setLong("storageEU", storageEU);
+        aNBT.setDouble("outputMultiplier", outputMultiplier);
+        aNBT.setLong("currentOutputEU", currentOutputEU);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        storageEU = aNBT.getLong("storageEU");
+        outputMultiplier = aNBT.getDouble("outputMultiplier");
+        currentOutputEU = aNBT.getLong("currentOutputEU");
+    }
+
+    @Override
+    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
+        IWailaConfigHandler config) {
+        super.getWailaBody(itemStack, currentTip, accessor, config);
+        final NBTTagCompound tag = accessor.getNBTData();
+        if (tag.getBoolean("isActive")) {
+            currentTip.add(
+                EnumChatFormatting.AQUA + texter("Concert will generate : ")
+                    + EnumChatFormatting.BLUE
+                    + tag.getLong("currentOutputEU")
+                    + EnumChatFormatting.RESET
+                    + " EU");
+        }
+    }
+
+    @Override
+    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
+        int z) {
+        super.getWailaNBTData(player, tile, tag, world, x, y, z);
+        final IGregTechTileEntity tileEntity = getBaseMetaTileEntity();
+        if (tileEntity != null) {
+            if (tileEntity.isActive()) {
+                tag.setLong("currentOutputEU", currentOutputEU);
+            }
+        }
+    }
+
+    @Override
     protected boolean isEnablePerfectOverclock() {
         return true;
     }
 
     @Override
     protected float getSpeedBonus() {
-        return 1.0F / 16;
+        return 1.0F;
     }
 
     @Override
     protected int getMaxParallelRecipes() {
-        return Integer.MAX_VALUE;
+        return 1;
     }
 
     // endregion
@@ -100,14 +210,14 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
             .addElement(
                 'E',
                 GT_HatchElementBuilder.<GT_TileEntity_HatsuneMiku>builder()
-                    .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy)
+                    .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Dynamo)
                     .dot(1)
                     .casingIndex(GT_Utility.getCasingTextureIndex(GregTech_API.sBlockCasings8, 6))
                     .buildAndChain(GregTech_API.sBlockCasings8, 6))
             .addElement(
                 'F',
                 GT_HatchElementBuilder.<GT_TileEntity_HatsuneMiku>builder()
-                    .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy)
+                    .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Dynamo)
                     .dot(1)
                     .casingIndex(GT_Utility.getCasingTextureIndex(GregTech_API.sBlockCasings8, 10))
                     .buildAndChain(GregTech_API.sBlockCasings8, 10))
@@ -144,10 +254,9 @@ public class GT_TileEntity_HatsuneMiku extends GTCM_MultiMachineBase<GT_TileEnti
     // endregion
 
     // region Overrides
-
     @Override
     public RecipeMap<?> getRecipeMap() {
-        return null;
+        return GTCMRecipe.HatsuneMikuRecipes;
     }
 
     @Override

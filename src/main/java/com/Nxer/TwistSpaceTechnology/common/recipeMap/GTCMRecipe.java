@@ -573,5 +573,14 @@ public class GTCMRecipe {
         .frontend(AssemblyLineFrontend::new)
         .build();
 
+    public static final RecipeMap<RecipeMapBackend> HatsuneMikuRecipes = RecipeMapBuilder
+        .of("tst.recipe.HatsuneMikuRecipes")
+        .maxIO(1, 1, 1, 1)
+        .progressBar(GT_UITextures.PROGRESSBAR_ARROW_MULTIPLE)
+        .frontend(TST_GeneralFrontend::new)
+        .neiHandlerInfo(builder -> builder.setDisplayStack(GTCMItemList.HatsuneMiku.get(1)))
+        .disableOptimize()
+        .build();
+
     // endregion
 }
